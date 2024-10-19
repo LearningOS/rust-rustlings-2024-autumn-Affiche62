@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +37,20 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count+=1;
+        
+        let mut parentIndex =self.parent_idx(self.count);
+        let mut childIndex:usize;
+        
+        while parentIndex>=1{
+            childIndex=self.smallest_child_idx(parentIndex);
+            if (self.comparator)(&self.items[parentIndex],&self.items[childIndex]){
+                parentIndex-=1;
+            }else{
+                self.items.swap(parentIndex,childIndex);
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,8 +71,26 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+		if self.children_present(idx){
+            let left =&self.items[self.left_child_idx(idx)];
+            
+            if self.right_child_idx(idx)>self.count{
+                return self.left_child_idx(idx);
+            }else{
+                let right=&self.items[self.right_child_idx(idx)];
+                
+                if (self.comparator)(left,right){
+                    return self.left_child_idx(idx);
+                }else{
+                    return self.right_child_idx(idx);
+                }
+            }
+        }else{
+            
+            return 0;
+        }
     }
+    
 }
 
 impl<T> Heap<T>
@@ -85,8 +116,32 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.is_empty(){
+            None
+        }else{
+            
+            self.items.swap(1,self.count);
+            let temp=self.items.pop();
+            self.count-=1;
+            
+           
+            let mut parentIndex =self.parent_idx(self.count);
+            let mut childIndex:usize;
+            
+            while parentIndex>=1{
+                childIndex=self.smallest_child_idx(parentIndex);
+                if (self.comparator)(&self.items[parentIndex],&self.items[childIndex]){
+                    parentIndex-=1;
+                }else{
+                   
+                    self.items.swap(parentIndex,childIndex);
+                }
+            }
+          
+            temp
+        }
     }
+    
 }
 
 pub struct MinHeap;

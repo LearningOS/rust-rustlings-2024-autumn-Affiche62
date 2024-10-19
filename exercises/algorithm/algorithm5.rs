@@ -3,8 +3,7 @@
 	This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
-use std::collections::VecDeque;
+use std::collections::{VecDeque, HashSet};
 
 // Define a graph
 struct Graph {
@@ -28,9 +27,26 @@ impl Graph {
     // Perform a breadth-first search on the graph, return the order of visited nodes
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
-		//TODO
+		let mut visit_order = Vec::new();
+        let mut queue = VecDeque::new();
+        let mut visited = HashSet::new();
 
-        let mut visit_order = vec![];
+        // Start from the given node
+        queue.push_back(start);
+        visited.insert(start);
+
+        while let Some(node) = queue.pop_front() {
+            visit_order.push(node); // Record the visit order
+
+            // Iterate through all the neighbors of the current node
+            for &neighbor in &self.adj[node] {
+                if !visited.contains(&neighbor) {
+                    visited.insert(neighbor); // Mark it as visited
+                    queue.push_back(neighbor); // Add it to the queue
+                }
+            }
+        }
+
         visit_order
     }
 }
